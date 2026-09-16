@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RUN/ME — Сегодня</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF1ED;
+    --surface:#FFFFFF;
+    --surface-2:#E4E8E1;
+    --line:#D7DCD2;
+    --ink:#131C24;
+    --ink-soft:#5B6B70;
+    --pulse:#E14E36;
+    --pulse-soft:#F8DAD2;
+    --energy:#1D8F5E;
+    --energy-soft:#D8EEE1;
+    --warn:#C98A2E;
+    --warn-soft:#F3E3C8;
+    --blue:#3E8FD9;
+    --blue-soft:#DCE9F5;
+    --hero-bg:#101820;
+    --hero-ink:#F5F2EA;
+    --radius-l:22px;
+    --radius-m:16px;
+    --radius-s:10px;
+    --font-display:'Bebas Neue','Arial Narrow',sans-serif;
+    --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F151B;
+      --surface:#19222A;
+      --surface-2:#212B33;
+      --line:#2A343C;
+      --ink:#EEF2EF;
+      --ink-soft:#93A2A9;
+      --pulse:#FF6B54;
+      --pulse-soft:#3A2420;
+      --energy:#34D18F;
+      --energy-soft:#16332A;
+      --warn:#E3A94A;
+      --warn-soft:#3A2E18;
+      --blue:#5CA6E8;
+      --blue-soft:#182B3A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F151B;
+    --surface:#19222A;
+    --surface-2:#212B33;
+    --line:#2A343C;
+    --ink:#EEF2EF;
+    --ink-soft:#93A2A9;
+    --pulse:#FF6B54;
+    --pulse-soft:#3A2420;
+    --energy:#34D18F;
+    --energy-soft:#16332A;
+    --warn:#E3A94A;
+    --warn-soft:#3A2E18;
+    --blue:#5CA6E8;
+    --blue-soft:#182B3A;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:0 0 48px;
+  }
+  .app{
+    max-width:460px;
+    margin:0 auto;
+    padding:20px 18px 8px;
+  }
+  button, input, select{ font-family:inherit; }
+  button{ cursor:pointer; }
+  *:focus-visible{
+    outline:2px solid var(--energy);
+    outline-offset:2px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+
+  /* header */
+  .header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .wordmark{
+    font-family:var(--font-display);
+    font-size:30px;
+    letter-spacing:0.04em;
+    line-height:1;
+  }
+  .wordmark span{ color:var(--pulse); }
+  .header-date{
+    text-align:right;
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.4;
+  }
+  .greeting{
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+  }
+
+  /* hero workout card */
+  .hero{
+    background:var(--hero-bg);
+    color:var(--hero-ink);
+    border-radius:var(--radius-l);
+    padding:20px 20px 18px;
+    margin-bottom:14px;
+  }
+  .hero-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .hero-label{
+    font-size:13px;
+    color:#B9C2C8;
+    font-weight:500;
+  }
+  .chip-row{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:16px;
+  }
+  .chip{
+    border:1px solid rgba(255,255,255,0.16);
+    background:transparent;
+    color:#CBD3D6;
+    padding:7px 13px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .chip.active{
+    background:var(--pulse);
+    border-color:var(--pulse);
+    color:#101820;
+    font-weight:700;
+  }
+  .hero-numbers{
+    display:flex;
+    align-items:flex-end;
+    gap:26px;
+  }
+  .hero-figure{ display:flex; flex-direction:column; }
+  .hero-figure .num-row{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+  .hero-figure input{
+    background:none;
+    border:none;
+    color:var(--hero-ink);
+    font-family:var(--font-display);
+    font-size:52px;
+    width:2.1ch;
+    padding:0;
+    -moz-appearance:textfield;
+  }
+  .hero-figure input::-webkit-outer-spin-button,
+  .hero-figure input::-webkit-inner-spin-button{
+    -webkit-appearance:none; margin:0;
+  }
+  .hero-figure .unit{
+    font-size:14px;
+    color:#9AA5AA;
+    padding-bottom:10px;
+  }
+  .hero-figure .cap{
+    font-size:12px;
+    color:#8C979C;
+    margin-top:2px;
+  }
+  .hero-rest{
+    font-size:15px;
+    color:#D5DADC;
+    padding:10px 0 2px;
+  }
+
+  /* section title */
+  .section-title{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-weight:600;
+    margin:22px 2px 10px;
+  }
+
+  /* stat tiles */
+  .stats-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .tile{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-m);
+    padding:14px 14px 12px;
+  }
+  .tile-label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    font-weight:500;
+    margin-bottom:6px;
+  }
+  .tile-value-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+  }
+  .tile-value{
+    font-family:var(--font-display);
+    font-size:34px;
+    line-height:1;
+  }
+  .tile-unit{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-left:4px;
+    font-family:var(--font-body);
+  }
+  .stepper{
+    display:flex;
+    gap:6px;
+  }
+  .stepper button{
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--surface-2);
+    color:var(--ink);
+    font-size:16px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .stepper button:active{ background:var(--line); }
+
+  /* eq scales */
+  .scale-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-m);
+    padding:14px 14px 12px;
+    margin-bottom:10px;
+  }
+  .scale-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+  }
+  .scale-label{ font-size:13.5px; font-weight:600; }
+  .scale-value{
+    font-family:var(--font-display);
+    font-size:22px;
+  }
+  .scale-value small{
+    font-family:var(--font-body);
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+  .eq{
+    display:flex;
+    align-items:flex-end;
+    gap:4px;
+    height:38px;
+  }
+  .eq button{
+    flex:1;
+    border:none;
+    border-radius:3px;
+    background:var(--surface-2);
+    padding:0;
+  }
+  .eq button:nth-child(1){height:22%;}
+  .eq button:nth-child(2){height:31%;}
+  .eq button:nth-child(3){height:40%;}
+  .eq button:nth-child(4){height:49%;}
+  .eq button:nth-child(5){height:58%;}
+  .eq button:nth-child(6){height:67%;}
+  .eq button:nth-child(7){height:76%;}
+  .eq button:nth-child(8){height:85%;}
+  .eq button:nth-child(9){height:94%;}
+  .eq button:nth-child(10){height:100%;}
+  .eq.energy button.filled{ background:var(--energy); }
+  .eq.pulse button.filled{ background:var(--pulse); }
+
+  /* water */
+  .water-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-m);
+    padding:14px 14px 14px;
+    margin-bottom:10px;
+  }
+  .water-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+  }
+  .water-amount{
+    font-family:var(--font-display);
+    font-size:26px;
+  }
+  .water-amount small{
+    font-family:var(--font-body);
+    font-size:12px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+  .water-reset{
+    background:none; border:none;
+    font-size:12px;
+    color:var(--ink-soft);
+    text-decoration:underline;
+    padding:0;
+  }
+  .water-track{
+    position:relative;
+    height:14px;
+    background:var(--surface-2);
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:12px;
+  }
+  .water-fill{
+    position:absolute;
+    inset:0 auto 0 0;
+    width:0%;
+    background:#3E8FD9;
+    border-radius:999px;
+  }
+  .water-buttons{ display:flex; gap:8px; }
+  .water-buttons button{
+    flex:1;
+    border:1px solid var(--line);
+    background:var(--surface-2);
+    color:var(--ink);
+    border-radius:var(--radius-s);
+    padding:9px 0;
+    font-size:13px;
+    font-weight:600;
+  }
+  .water-buttons button:active{ background:var(--line); }
+
+  /* wellbeing */
+  .wellbeing-row{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  .wb-chip{
+    flex:1 1 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    border-radius:var(--radius-m);
+    padding:10px 4px 8px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+  .wb-dot{
+    width:14px; height:14px; border-radius:50%;
+  }
+  .wb-chip.active{
+    border-color:var(--wb-color, var(--ink));
+    background:var(--wb-color-soft, var(--surface));
+    color:var(--ink);
+    font-weight:700;
+  }
+
+  .foot-note{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:11.5px;
+    margin-top:22px;
+  }
+
+  /* week section */
+  .verdict-card{
+    border-radius:var(--radius-l);
+    padding:18px 18px 16px;
+    margin-bottom:12px;
+    background:var(--verdict-soft, var(--surface-2));
+    border:1px solid var(--line);
+  }
+  .verdict-title{
+    font-family:var(--font-display);
+    font-size:26px;
+    color:var(--verdict-color, var(--ink));
+    letter-spacing:0.01em;
+    margin-bottom:4px;
+  }
+  .verdict-sub{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .verdict-arrow{
+    font-weight:700;
+    color:var(--verdict-color, var(--ink));
+  }
+  .verdict-empty{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+  }
+
+  .week-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-m);
+    padding:14px 14px 10px;
+    margin-bottom:10px;
+  }
+  .week-card-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:12px;
+  }
+  .week-metric-label{
+    font-size:13.5px;
+    font-weight:600;
+  }
+  .week-avg{
+    font-family:var(--font-display);
+    font-size:20px;
+  }
+  .week-avg small{
+    font-family:var(--font-body);
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+  .week-bars{
+    display:flex;
+    gap:6px;
+  }
+  .week-col{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .week-col-track{
+    width:100%;
+    height:52px;
+    display:flex;
+    align-items:flex-end;
+  }
+  .week-bar{
+    width:100%;
+    border-radius:4px;
+    background:var(--bar-color, var(--surface-2));
+  }
+  .week-bar.empty{
+    background:var(--line);
+    opacity:0.5;
+  }
+  .week-daylabel{
+    font-size:10.5px;
+    color:var(--ink-soft);
+  }
+  .week-daylabel.today{
+    color:var(--ink);
+    font-weight:700;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="wordmark">RUN<span>/</span>ME</div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+
+  <p class="greeting" id="greeting"></p>
+
+  <!-- HERO: today's workout -->
+  <div class="hero">
+    <div class="hero-top">
+      <div class="hero-label">Тренировка на сегодня</div>
+    </div>
+    <div class="chip-row" id="workoutChips"></div>
+    <div id="heroNumbers"></div>
+  </div>
+
+  <div class="section-title">Организм</div>
+  <div class="stats-grid">
+    <div class="tile">
+      <div class="tile-label">Сон</div>
+      <div class="tile-value-row">
+        <div><span class="tile-value" id="sleepValue">—</span><span class="tile-unit">ч</span></div>
+        <div class="stepper">
+          <button id="sleepMinus" aria-label="Меньше">−</button>
+          <button id="sleepPlus" aria-label="Больше">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Пульс покоя</div>
+      <div class="tile-value-row">
+        <div><span class="tile-value" id="pulseValue">—</span><span class="tile-unit">уд/мин</span></div>
+        <div class="stepper">
+          <button id="pulseMinus" aria-label="Меньше">−</button>
+          <button id="pulsePlus" aria-label="Больше">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Самоощущение</div>
+
+  <div class="scale-card">
+    <div class="scale-head">
+      <span class="scale-label">Энергия</span>
+      <span class="scale-value" id="energyLabel">— <small>/ 10</small></span>
+    </div>
+    <div class="eq energy" id="energyScale"></div>
+  </div>
+
+  <div class="scale-card">
+    <div class="scale-head">
+      <span class="scale-label">Настроение</span>
+      <span class="scale-value" id="moodLabel">— <small>/ 10</small></span>
+    </div>
+    <div class="eq energy" id="moodScale"></div>
+  </div>
+
+  <div class="scale-card">
+    <div class="scale-head">
+      <span class="scale-label">Усталость</span>
+      <span class="scale-value" id="fatigueLabel">— <small>/ 10</small></span>
+    </div>
+    <div class="eq pulse" id="fatigueScale"></div>
+  </div>
+
+  <div class="section-title">Вода</div>
+  <div class="water-card">
+    <div class="water-top">
+      <div class="water-amount"><span id="waterValue">0</span> <small>/ <span id="waterGoal">2500</span> мл</small></div>
+      <button class="water-reset" id="waterReset">сбросить</button>
+    </div>
+    <div class="water-track"><div class="water-fill" id="waterFill"></div></div>
+    <div class="water-buttons">
+      <button data-add="250">+250 мл</button>
+      <button data-add="500">+500 мл</button>
+    </div>
+  </div>
+
+  <div class="section-title">Общее самочувствие</div>
+  <div class="wellbeing-row" id="wellbeingRow"></div>
+
+  <div class="section-title">Неделя</div>
+  <div id="verdictCard"></div>
+  <div id="weekMetrics"></div>
+
+  <p class="foot-note">Данные сохраняются на этом устройстве по дням</p>
+
+</div>
+
+<script>
+(function(){
+  var todayKey = new Date().toISOString().slice(0,10);
+  var storageKey = 'runme:' + todayKey;
+
+  var defaults = {
+    sleepHours: 7,
+    restingPulse: 55,
+    energy: 6,
+    mood: 6,
+    fatigue: 4,
+    water: 0,
+    waterGoal: 2500,
+    workoutType: 'Лёгкий бег',
+    workoutDistance: 5,
+    workoutDuration: 30,
+    wellbeing: 'Хорошо'
+  };
+
+  var state = loadState();
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(storageKey);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        return Object.assign({}, defaults, parsed);
+      }
+    }catch(e){}
+    return Object.assign({}, defaults);
+  }
+
+  function saveState(){
+    try{
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }catch(e){}
+  }
+
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+  // header + greeting
+  var days = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+  var months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  var now = new Date();
+  document.getElementById('headerDate').textContent = days[now.getDay()] + '\n' + now.getDate() + ' ' + months[now.getMonth()];
+  document.getElementById('headerDate').style.whiteSpace = 'pre-line';
+
+  var hour = now.getHours();
+  var greetingText;
+  if(hour >= 5 && hour < 11) greetingText = 'Доброе утро';
+  else if(hour >= 11 && hour < 17) greetingText = 'Добрый день';
+  else if(hour >= 17 && hour < 23) greetingText = 'Добрый вечер';
+  else greetingText = 'Доброй ночи';
+  document.getElementById('greeting').textContent = greetingText;
+
+  // ---- workout hero ----
+  var workoutTypes = ['Отдых','Лёгкий бег','Интервалы','Темповая','Длительная'];
+  var chipRow = document.getElementById('workoutChips');
+  workoutTypes.forEach(function(type){
+    var b = document.createElement('button');
+    b.className = 'chip' + (state.workoutType === type ? ' active' : '');
+    b.textContent = type;
+    b.addEventListener('click', function(){
+      state.workoutType = type;
+      saveState();
+      renderChips();
+      renderHeroNumbers();
+    });
+    chipRow.appendChild(b);
+  });
+  function renderChips(){
+    Array.prototype.forEach.call(chipRow.children, function(c){
+      c.classList.toggle('active', c.textContent === state.workoutType);
+    });
+  }
+
+  var heroNumbers = document.getElementById('heroNumbers');
+  function renderHeroNumbers(){
+    heroNumbers.innerHTML = '';
+    if(state.workoutType === 'Отдых'){
+      var rest = document.createElement('div');
+      rest.className = 'hero-rest';
+      rest.textContent = 'Сегодня день восстановления — телу тоже нужны тренировки в покое.';
+      heroNumbers.appendChild(rest);
+      return;
+    }
+    var wrap = document.createElement('div');
+    wrap.className = 'hero-numbers';
+
+    function figure(id, value, step, unit, cap, min, max){
+      var fig = document.createElement('div');
+      fig.className = 'hero-figure';
+      var row = document.createElement('div');
+      row.className = 'num-row';
+      var input = document.createElement('input');
+      input.type = 'number';
+      input.step = step;
+      input.min = min; input.max = max;
+      input.value = value;
+      input.id = id;
+      var unitSpan = document.createElement('span');
+      unitSpan.className = 'unit';
+      unitSpan.textContent = unit;
+      row.appendChild(input);
+      row.appendChild(unitSpan);
+      var capSpan = document.createElement('div');
+      capSpan.className = 'cap';
+      capSpan.textContent = cap;
+      fig.appendChild(row);
+      fig.appendChild(capSpan);
+      return {fig: fig, input: input};
+    }
+
+    var distF = figure('distInput', state.workoutDistance, 0.5, 'км', 'дистанция', 0, 100);
+    var durF = figure('durInput', state.workoutDuration, 5, 'мин', 'время', 0, 400);
+    wrap.appendChild(distF.fig);
+    wrap.appendChild(durF.fig);
+    heroNumbers.appendChild(wrap);
+
+    distF.input.addEventListener('change', function(){
+      state.workoutDistance = parseFloat(this.value) || 0;
+      saveState();
+    });
+    durF.input.addEventListener('change', function(){
+      state.workoutDuration = parseFloat(this.value) || 0;
+      saveState();
+    });
+  }
+  renderHeroNumbers();
+
+  // ---- sleep tile ----
+  var sleepValue = document.getElementById('sleepValue');
+  function renderSleep(){ sleepValue.textContent = state.sleepHours.toString().replace('.', ','); }
+  document.getElementById('sleepMinus').addEventListener('click', function(){
+    state.sleepHours = clamp(Math.round((state.sleepHours - 0.5)*10)/10, 0, 14);
+    saveState(); renderSleep();
+  });
+  document.getElementById('sleepPlus').addEventListener('click', function(){
+    state.sleepHours = clamp(Math.round((state.sleepHours + 0.5)*10)/10, 0, 14);
+    saveState(); renderSleep();
+  });
+  renderSleep();
+
+  // ---- resting pulse tile ----
+  var pulseValue = document.getElementById('pulseValue');
+  function renderPulse(){ pulseValue.textContent = state.restingPulse; }
+  document.getElementById('pulseMinus').addEventListener('click', function(){
+    state.restingPulse = clamp(state.restingPulse - 1, 30, 130);
+    saveState(); renderPulse();
+  });
+  document.getElementById('pulsePlus').addEventListener('click', function(){
+    state.restingPulse = clamp(state.restingPulse + 1, 30, 130);
+    saveState(); renderPulse();
+  });
+  renderPulse();
+
+  // ---- eq scales ----
+  function buildScale(containerId, labelId, key){
+    var container = document.getElementById(containerId);
+    for(var i=1;i<=10;i++){
+      (function(i){
+        var b = document.createElement('button');
+        b.addEventListener('click', function(){
+          state[key] = i;
+          saveState();
+          renderScale(containerId, labelId, key);
+        });
+        container.appendChild(b);
+      })(i);
+    }
+    renderScale(containerId, labelId, key);
+  }
+  function renderScale(containerId, labelId, key){
+    var container = document.getElementById(containerId);
+    var value = state[key];
+    Array.prototype.forEach.call(container.children, function(btn, idx){
+      btn.classList.toggle('filled', idx < value);
+    });
+    document.getElementById(labelId).innerHTML = value + ' <small>/ 10</small>';
+  }
+  buildScale('energyScale','energyLabel','energy');
+  buildScale('moodScale','moodLabel','mood');
+  buildScale('fatigueScale','fatigueLabel','fatigue');
+
+  // ---- water ----
+  var waterValue = document.getElementById('waterValue');
+  var waterFill = document.getElementById('waterFill');
+  document.getElementById('waterGoal').textContent = state.waterGoal;
+  function renderWater(){
+    waterValue.textContent = state.water;
+    var pct = clamp((state.water / state.waterGoal) * 100, 0, 100);
+    waterFill.style.width = pct + '%';
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.water-buttons button'), function(btn){
+    btn.addEventListener('click', function(){
+      state.water += parseInt(this.getAttribute('data-add'), 10);
+      saveState(); renderWater();
+    });
+  });
+  document.getElementById('waterReset').addEventListener('click', function(){
+    state.water = 0;
+    saveState(); renderWater();
+  });
+  renderWater();
+
+  // ---- wellbeing ----
+  var wbOptions = [
+    {label:'Отлично', color:'#1D8F5E', soft:'#D8EEE1'},
+    {label:'Хорошо', color:'#3E8FD9', soft:'#DCE9F5'},
+    {label:'Так себе', color:'#C98A2E', soft:'#F3E3C8'},
+    {label:'Устал(а)', color:'#D9762E', soft:'#F5E2D2'},
+    {label:'Плохо', color:'#E14E36', soft:'#F8DAD2'}
+  ];
+  var wbRow = document.getElementById('wellbeingRow');
+  wbOptions.forEach(function(opt){
+    var chip = document.createElement('button');
+    chip.className = 'wb-chip' + (state.wellbeing === opt.label ? ' active' : '');
+    chip.style.setProperty('--wb-color', opt.color);
+    chip.style.setProperty('--wb-color-soft', opt.soft);
+    var dot = document.createElement('span');
+    dot.className = 'wb-dot';
+    dot.style.background = opt.color;
+    var text = document.createElement('span');
+    text.textContent = opt.label;
+    chip.appendChild(dot);
+    chip.appendChild(text);
+    chip.addEventListener('click', function(){
+      state.wellbeing = opt.label;
+      saveState();
+      renderWellbeing();
+    });
+    wbRow.appendChild(chip);
+  });
+  function renderWellbeing(){
+    Array.prototype.forEach.call(wbRow.children, function(chip, idx){
+      chip.classList.toggle('active', wbOptions[idx].label === state.wellbeing);
+    });
+  }
+
+  // ---- week ----
+  var weekdayShort = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+
+  function toKey(d){
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var day = String(d.getDate()).padStart(2,'0');
+    return y + '-' + m + '-' + day;
+  }
+
+  function loadDay(d){
+    try{
+      var raw = localStorage.getItem('runme:' + toKey(d));
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return null;
+  }
+
+  function buildWeek(){
+    var days = [];
+    var base = new Date();
+    for(var i=6;i>=0;i--){
+      var d = new Date(base);
+      d.setDate(base.getDate() - i);
+      days.push({ date: d, isToday: i === 0, data: loadDay(d) });
+    }
+    return days;
+  }
+
+  var week = buildWeek();
+
+  // -- overall verdict --
+  var verdictHost = document.getElementById('verdictCard');
+  (function renderVerdict(){
+    var scoreMap = { 'Отлично':5, 'Хорошо':4, 'Так себе':3, 'Устал(а)':2, 'Плохо':1 };
+    var scored = [];
+    week.forEach(function(w){
+      if(w.data && w.data.wellbeing && scoreMap[w.data.wellbeing]){
+        scored.push(scoreMap[w.data.wellbeing]);
+      }
+    });
+
+    var card = document.createElement('div');
+    card.className = 'verdict-card';
+
+    if(scored.length < 2){
+      card.innerHTML = '<div class="verdict-empty">Пока маловато отметок самочувствия за неделю — заполняй карточку «Общее самочувствие» каждый день, и здесь появится сравнение.</div>';
+      verdictHost.appendChild(card);
+      return;
+    }
+
+    var avg = scored.reduce(function(a,b){ return a+b; }, 0) / scored.length;
+    var half = Math.ceil(scored.length / 2);
+    var firstHalf = scored.slice(0, half);
+    var secondHalf = scored.slice(half);
+
+    var levelText, levelColor, levelSoft;
+    if(avg >= 4.3){ levelText = 'Неделя отличная'; levelColor = 'var(--energy)'; levelSoft = 'var(--energy-soft)'; }
+    else if(avg >= 3.5){ levelText = 'Неделя хорошая'; levelColor = 'var(--energy)'; levelSoft = 'var(--energy-soft)'; }
+    else if(avg >= 2.6){ levelText = 'Неделя ровная'; levelColor = 'var(--warn)'; levelSoft = 'var(--warn-soft)'; }
+    else if(avg >= 1.8){ levelText = 'Неделя тяжеловатая'; levelColor = 'var(--warn)'; levelSoft = 'var(--warn-soft)'; }
+    else { levelText = 'Неделя тяжёлая'; levelColor = 'var(--pulse)'; levelSoft = 'var(--pulse-soft)'; }
+
+    var trendText = 'самочувствие держится ровно всю неделю';
+    var arrow = '→';
+    if(secondHalf.length > 0){
+      var firstAvg = firstHalf.reduce(function(a,b){return a+b;},0) / firstHalf.length;
+      var secondAvg = secondHalf.reduce(function(a,b){return a+b;},0) / secondHalf.length;
+      var diff = secondAvg - firstAvg;
+      if(diff > 0.35){ trendText = 'самочувствие улучшается к концу недели'; arrow = '↑'; }
+      else if(diff < -0.35){ trendText = 'самочувствие снижается к концу недели'; arrow = '↓'; }
+    }
+
+    card.style.setProperty('--verdict-color', levelColor);
+    card.style.setProperty('--verdict-soft', levelSoft);
+    card.innerHTML =
+      '<div class="verdict-title">' + levelText + '</div>' +
+      '<div class="verdict-sub"><span class="verdict-arrow">' + arrow + '</span><span>' + trendText + '</span></div>';
+    verdictHost.appendChild(card);
+  })();
+
+  // -- per-metric weekly charts --
+  var metricDefs = [
+    { key:'sleepHours', label:'Сон', unit:'ч', decimals:1, min:0, max:10, family:'blue' },
+    { key:'restingPulse', label:'Пульс покоя', unit:'уд/мин', decimals:0, min:40, max:90, family:'pulse' },
+    { key:'energy', label:'Энергия', unit:'/10', decimals:1, min:0, max:10, family:'energy' },
+    { key:'mood', label:'Настроение', unit:'/10', decimals:1, min:0, max:10, family:'energy' },
+    { key:'fatigue', label:'Усталость', unit:'/10', decimals:1, min:0, max:10, family:'pulse' },
+    { key:'waterPct', label:'Вода', unit:'% от цели', decimals:0, min:0, max:100, family:'blue',
+      getValue: function(d){ return d.water != null && d.waterGoal ? (d.water / d.waterGoal) * 100 : null; } }
+  ];
+
+  var weekHost = document.getElementById('weekMetrics');
+
+  metricDefs.forEach(function(def){
+    var values = week.map(function(w){
+      if(!w.data) return null;
+      if(def.getValue) return def.getValue(w.data);
+      var v = w.data[def.key];
+      return (v === undefined || v === null) ? null : v;
+    });
+    var present = values.filter(function(v){ return v !== null; });
+
+    var card = document.createElement('div');
+    card.className = 'week-card';
+
+    var head = document.createElement('div');
+    head.className = 'week-card-head';
+    var label = document.createElement('span');
+    label.className = 'week-metric-label';
+    label.textContent = def.label;
+    head.appendChild(label);
+
+    var avgSpan = document.createElement('span');
+    avgSpan.className = 'week-avg';
+    if(present.length){
+      var avg = present.reduce(function(a,b){return a+b;},0) / present.length;
+      avgSpan.innerHTML = avg.toFixed(def.decimals) + ' <small>' + def.unit + '</small>';
+    } else {
+      avgSpan.innerHTML = '— <small>' + def.unit + '</small>';
+    }
+    head.appendChild(avgSpan);
+    card.appendChild(head);
+
+    var bars = document.createElement('div');
+    bars.className = 'week-bars';
+
+    week.forEach(function(w, idx){
+      var col = document.createElement('div');
+      col.className = 'week-col';
+
+      var track = document.createElement('div');
+      track.className = 'week-col-track';
+
+      var bar = document.createElement('div');
+      var v = values[idx];
+      if(v === null){
+        bar.className = 'week-bar empty';
+        bar.style.height = '10%';
+      } else {
+        bar.className = 'week-bar';
+        var pct = ((v - def.min) / (def.max - def.min)) * 100;
+        pct = Math.max(6, Math.min(100, pct));
+        bar.style.height = pct + '%';
+        bar.style.setProperty('--bar-color', w.isToday ? 'var(--' + def.family + ')' : 'var(--' + def.family + '-soft)');
+      }
+      track.appendChild(bar);
+      col.appendChild(track);
+
+      var dayLabel = document.createElement('span');
+      dayLabel.className = 'week-daylabel' + (w.isToday ? ' today' : '');
+      dayLabel.textContent = weekdayShort[w.date.getDay()];
+      col.appendChild(dayLabel);
+
+      bars.appendChild(col);
+    });
+
+    card.appendChild(bars);
+    weekHost.appendChild(card);
+  });
+
+})();
+</script>
+</body>
+</html>
